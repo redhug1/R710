@@ -1,0 +1,46 @@
+See 15 mins into video 7 for details of network info like DNS, etc
+
+	Dell PowerEdge R710 build PART 7/9 | Proxmox VE 6.1 install, idrac virtual media, and ZFS
+
+	https://www.youtube.com/watch?v=tASVYJg6qQk
+
+After install, log in via browser on: https://<IP address>:8006
+
+	and accept warnings and click on Advanced (warnings due to it usig its own self signed certificate)
+
+Then to get rid of annoying pop-up for a subscription (see ~21+ mins into vid 7):
+
+	github.com/foundObjects/pve-nag-buster
+
+*** BUT: inspect the contents of the downloaded files, as it contains a number of DOT.* files ... hmmm
+
+Then, in the browser, logout of Proxmox, hold down the SHIFT key and click on the browsers refresh button to clear its
+client side cache of the javascript that was previously downloaded that is part of the pop-up nag window.
+
+Then follow rest of steps in vid ...
+
+-=-=-
+
+vid 8:
+
+See ~4+ mins in, to install kernel headers, etc into proxmox (if i ever need them).
+
+	Dell PowerEdge R710 build PART 7/9 | Proxmox VE 6.1 install, idrac virtual media, and ZFS
+
+	https://www.youtube.com/watch?v=TPKWs3OG6tU
+
+-=-=-
+
+vid 9:  this covers settng up an LXC ...
+
+	Dell PowerEdge R710 build PART 9/9 | my mistake, LXC GPU pass-through, PLEX transcoding 
+
+	https://www.youtube.com/watch?v=n7U1DLLGquY
+
+	When doing this, try limiting the CPU core usage to 90% ... so avoid high temperature's and prolong life.
+
+-=-=-
+
+
+3. Look into 'Rancher' - similar to portainer, but can also do some kubernetes stuff ...
+

@@ -1,0 +1,254 @@
+all of this from:
+
+Dell PowerEdge R710 build PART 1/9 | fixes, bios and firmware updates, and factory reset
+
+https://www.youtube.com/watch?v=8Z2_bTAR3FA
+
+centos 7 on usb:
+
+https://www.tecmint.com/install-centos-7-in-a-usb-drive/
+
+	https://buildlogs.centos.org/centos/7/isos/x86_64/
+
+https://www.google.co.uk/search?source=hp&ei=e2_CXvfZMq7O1fAP8JGq4A8&q=install+centos+7+onto+usb&oq=put+centos+7+onto+&gs_lcp=CgZwc3ktYWIQAxgAMgYIABAWEB46AggAOgUIABCDAToECAAQCjoECAAQAzoICCEQFhAdEB5QtAtY-ktghWJoAHAAeACAAWGIAYQJkgECMTaYAQCgAQGqAQdnd3Mtd2l6&sclient=psy-ab
+
+NOTE: when installing centos to 2nd USB from 1st USB stick, give it a HOST name of "r710-centos7-usb_int" ... for INTERNAL BOOT
+
+Dell PowerEdge R710
+===================
+
+idrac password after bios reset, etc:
+
+root : calvin
+
+
+All the following downloaded files are self executing scripts, so once all downloaded, change them to be execurable:
+
+	chmod +x *.BIN
+
+-=-=-
+
+LIFECYCLE CONTROLLER ... ensure both PSU's are of same wattage (if not, do upgrade with ONE PSU inserted at a time)
+
+*** PSU updates - deselect them and do NOT do them as they can sometimes be problematic and might BRICK the PSU !
+
+(from video:
+	How to update BIOS and firmware using Dell Lifecycle Controller | what to do when it doesn't work 
+	https://www.youtube.com/watch?v=ISA7j2BKgjI
+)
+
+To get the LIFECYCLE update, go to:
+	dell.com/support/home/us/en/04/?c=us&|=en&s=bsd
+
+and enter ther serial number or Service Tag of the machine
+
+	OR search for "iDRAC with Lifecycle controller"
+
+try updating this first and use it to update the rest:
+
+Using "Lifecycle controller 2" to do updates:
+
+For new web address to get updates from, See web page:
+
+dell.com/support/article/us/en/04/sln292343/poweredge-server-lifecycle-controller-update?lang=en
+
+Use Centos internal USB boot to achieve the update.
+
+*** though after this update, in the video the network was no longer visible in the lifecycle controller ...
+
+	SO ... it might be best to update individual components seperately !!! (and skip the lifecycle controller)
+
+-=-=-
+
+BIOS update:
+
+https://www.dell.com/support/home/en-uk/product-support/product/poweredge-r710/drivers
+
+to download:
+
+BIOS_0F4YY_LN_6.6.0.BIN
+
+*** check over video's again , after resetting everything to default ... 
+	need to make sure the CPU is enabled for Hyper Threading OR whatever is needed and document here !!!
+
+
+for red hat enterprise linux 7
+
+and then use centos 7 usb boot ...
+
+-=-=-
+
+iDRAC update: (it might be iDRAC with Lifecycle Controller)
+
+https://www.dell.com/support/home/en-uk/product-support/product/poweredge-r710/drivers
+
+to download:
+
+ESM_Firmware_KPCCC_LN32_2.92_A00.BIN
+
+-=-=-
+
+Network  ... when booted into centos terminal, type:
+
+	ethtool -i em1
+
+then:
+
+	dmesg | grep bnx2 | more   ... or whatever description for the controller looks right
+
+and then sus exact card details from results.
+
+The final driver may be some qlogic part ... as they bought broadcom intellectual rights to the network
+card stuff.
+
+to see what network the motherboard has, then download the appropriate driver from:
+
+https://www.dell.com/support/home/en-uk/product-support/product/poweredge-r710/drivers
+
+OR ... 
+	may have to do a google search for driver ...
+
+but before going any further, go over the video from 30 minutes in to 33 minutes and look at the compatibility
+list that is mentioned !!!
+
+7.10.18 is a likely candidate, or maybe 7.12.17
+
+Also look for SAS RAID Firmware, maybe something like:
+
+	SAS-RAID_Firmware_F96NR_LN_6.3.3-0002_X00.BIN  ... or whatever suits particular RAID card ... PERC6
+
+then watch min 33 onwards to end on applying these ...
+
+---
+
+pay attention for the "CTRL + E"  to get into the idrac configuration utility at ~ 46 minutes into video
+
+	=> to do the RESET to default values (to RESET password, etc)
+
+-=-=-
+
+Fixing long time to boot:
+
+	Disable system memory testing in BIOS
+
+	https://www.dell.com/support/article/en-uk/sln250009/r710-takes-a-long-time-or-hangs-during-post?lang=en
+
+-=-=-
+
+CPU - re-seating:
+
+	https://www.dell.com/support/article/en-uk/sln111202/how-to-reseat-a-socket-b-lg1366-processor-on-dell-poweredge-11g-servers-including-the-r710-t610-r510-and-m610?lang=en
+
+-=-=-
+
+Hard disc / RAID info:
+
+	https://www.dell.com/support/article/en-uk/how10062/understand-maintain-and-troubleshoot-hard-drives-and-raid-storage-in-poweredge-servers?lang=en
+
+RAID battery problems, etc:
+
+	https://www.dell.com/support/article/en-uk/sln130018/how-to-troubleshoot-memory-or-battery-errors-on-the-perc-controller-on-dell-poweredge-servers?lang=en
+
+-=-=-
+
+iDrac issues:
+
+	https://www.dell.com/support/article/en-uk/sln304822/poweredge-how-to-solve-idrac-connectivity-and-configuration-issues?lang=en
+
+iDRAC6 usage:
+
+	https://www.dell.com/support/article/en-uk/sln283524/using-the-idrac6-configuration-utility-ctrl-e?lang=en
+
+iDRAC setup:
+
+	https://www.dell.com/support/article/en-uk/sln85612/how-to-setup-and-manage-your-idrac-or-cmc-for-dell-poweredge-servers-and-blades?lang=en
+
+-=-=-
+
+PSU issues:
+
+	https://www.dell.com/support/article/en-uk/sln305797/poweredge-psu-how-to-troubleshoot-a-server-power-supply-unit?lang=en
+
+-=-=-
+
+Hardware diagnostics:
+	
+	https://www.dell.com/support/article/en-uk/sln292242/how-to-run-the-dell-hardware-diagnostics-usc-to-troubleshoot-the-different-components-in-a-poweredge-server?lang=en
+
+-=-=-
+
+Enabling Virtualization:
+	
+	https://www.dell.com/support/article/en-uk/sln310623/enabling-sr-iov-technology-on-dell-poweredge-servers?lang=en
+-=-=-
+
+hardware bits:
+
+https://www.ebay.co.uk/sch/i.html?_from=R40&_sacat=0&_nkw=dell+h200&_sop=15
+
+https://www.ebay.co.uk/sch/i.html?_from=R40&_sacat=0&_nkw=idrac+express&_sop=15
+
+https://www.ebay.co.uk/sch/i.html?_from=R40&_sacat=0&_nkw=idrac+express&_sop=15
+
+-=-=-
+
+From video:
+Dell PowerEdge R710 build PART 5/9 | CPU temperatures, noise levels, and power consumption 
+https://www.youtube.com/watch?v=LYTjgSw1OEA
+
+With Centos booted:
+
+	watch -n 1 sensors
+
+in another terminal:
+
+	sysbench --threads=24 -- time=60 cpu run
+
+Then look at ~16 mins into video onwards to set up command line monitoring of best / worst cores during more testing
+
+-=-=-
+
+smartctl -a /dev/sd<x> | more    ... where <x> is a to z for whatever drive you are getting info for
+
+'smartctl' can be installed with:
+
+	yum install -y smartmontools
+
+also try command:
+
+	lsscsi
+
+	lsusb
+
+	df -h
+-=-=-
+
+To use iDrac's java (if any problems encountered) ...
+
+See vid:
+
+	How to fix Java for iDRAC6 virtual console 
+
+	https://www.youtube.com/watch?v=drhSo9Xl9M0
+	
+		about 3 mins onwards into this vid.
+
+	there is also a 2nd vid to vuew ...
+
+-=-=-
+
+Or, there is the "Dell EMC Repository Manager" to dowload an ISO that does all the updates ...
+
+BUT the ISO needs adjusting to remove any PSU updates, etc
+
+See video:
+	Updating Dell PowerEdge Servers the Easy Way 
+	https://www.youtube.com/watch?v=ki78B4A_XkI
+
+See pages:
+	https://www.dell.com/support/home/en-uk/product-support/product/poweredge-r710/drivers
+
+	https://www.dell.com/support/driver/en-uk/DriversDetails?driverid=v8ym0
+		to download (for windows): DRMInstaller_3.3.0.627.exe
+
+	
